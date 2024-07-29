@@ -1,5 +1,11 @@
 
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBDeleteExpression;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
+import com.amazonaws.services.dynamodbv2.model.AttributeValue;
+import com.amazonaws.services.dynamodbv2.model.ExpectedAttributeValue;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class TaskDAO {
 
@@ -18,8 +24,16 @@ public class TaskDAO {
      * @param task Task instance that is passed into the delete() method to delete if it meets the delete condition
      */
     public void deleteTask(Task task) {
-        //TODO: Replace this code to add the delete condition described above and in the README.
-        mapper.delete(task);
+        try {
+            DynamoDBDeleteExpression deleteExpression = new DynamoDBDeleteExpression();
+            Map<String, ExpectedAttributeValue> expected = new HashMap<>();
+            expected.put("year_completed", new ExpectedAttributeValue(new AttributeValue("2016")));
+            deleteExpression.setExpected(expected);
+            mapper.delete(task, deleteExpression);
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+
     }
 
     /**
